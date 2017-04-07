@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo Cek Lokasi Geolocation HTML5</title>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBleMMbnXwFvAhSJA721Cc9bby72UeOhZI">
+    </script>
+</head>
+
+<body>
+<center>
+<p id="tampilkan"></p>
+<p>Cek lokasi anda! >> <button onclick="getLocation()">Cek</button></p>
+<input id="btnRoad" type="button" value="RoadMap">
+<input id="btnSat" type="button" value="Satellite">
+<input id="btnHyb" type="button" value="Hybrid">
+<input id="btnTer" type="button" value="Terrain">
+
+<div id="mapcanvas"></div>
+</center>
+
+<script>
+var view = document.getElementById("tampilkan");
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        view.innerHTML = "Yah browsernya ngga support Geolocation bro!";
+    }
+}
+
+function showPosition(position) {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    latlon = new google.maps.LatLng(lat, lon)
+    mapcanvas = document.getElementById('mapcanvas')
+    mapcanvas.style.height = '500px';
+    mapcanvas.style.width = '500px';
+
+    var myOptions = {
+    center:latlon,
+    zoom:14,
+    mapTypeId:google.maps.MapTypeId.ROADMAP
+    }
+
+    var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+    var marker = new google.maps.Marker({
+        position:latlon,
+        map:map,
+        title:"You are here!"
+    });
+    startButtonEvents();
+}
+
+function startButtonEvents () {
+    document.getElementById('btnRoad').addEventListener('click', function(){
+        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+    });
+    document.getElementById('btnSat').addEventListener('click', function(){
+        map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+    });
+    document.getElementById('btnHyb').addEventListener('click', function(){
+        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+    });
+    document.getElementById('btnTer').addEventListener('click', function(){
+        map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+    });
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            view.innerHTML = "Yah, mau deteksi lokasi tapi ga boleh :("
+            break;
+        case error.POSITION_UNAVAILABLE:
+            view.innerHTML = "Yah, Info lokasimu nggak bisa ditemukan nih"
+            break;
+        case error.TIMEOUT:
+            view.innerHTML = "Requestnya timeout bro"
+            break;
+        case error.UNKNOWN_ERROR:
+            view.innerHTML = "An unknown error occurred."
+            break;
+    }
+ }
+ google.maps.event.addDomListener(window, 'load', showPosition);
+</script>
+
+</body>
+</html>
