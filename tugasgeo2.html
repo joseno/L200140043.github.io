@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tugas GIS 2 </title>
+	<style type="text/css">
+	#bagian_maps{
+		width:680px;
+		height:400px;
+		margin-top:5%;
+	}
+	#bagian_atas tr td{
+		padding:5px;
+	}
+	</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://getbootstrap.com/examples/sticky-footer/sticky-footer.css">
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkom0cq7dnMEw08wGiXpS8jtWpwjfRhfE&sensor=false"></script>
+	<script type="text/javascript">
+
+	function lokasinya(lat,long){
+    document.getElementById("nilai_latitude").innerHTML = "Latitude : "+lat; //pengaturan nilai latitude
+	 	document.getElementById("nilai_longitude").innerHTML = "Longitude : "+long; //pengaturan nilai longitude
+	}
+
+	var map_utama; //penjabaran status map_utama dapat diakses global
+
+	function load_peta(){
+    var pengaturan_map = {
+      zoom : 18,
+	    mapTypeId: google.maps.MapTypeId.ROADMAP
+	  }
+	  var element_peta 	= document.getElementById("bagian_maps");
+	  	map_utama 		= new google.maps.Map(element_peta,pengaturan_map);
+
+	  if(navigator.geolocation){ // pengaturan penampil lokasi pada peta
+	  	navigator.geolocation.getCurrentPosition(function(posisi){ // mencari lokasi
+	  		var nilai_lat 		= posisi.coords.latitude;
+	  		var nilai_long	 	= posisi.coords.longitude;
+
+	  		var lokasi_fix =  new google.maps.LatLng(nilai_lat, nilai_long); // menunjukkan posisi saat mengakses
+	  		map_utama.setCenter(lokasi_fix);
+
+	  		var penanda = new google.maps.Marker({ // pengaturan menampilkan penanda posisi user
+	  			position : lokasi_fix,
+	  			map : map_utama
+	  		});
+
+	 			lokasinya(nilai_lat,nilai_long);
+	 		});
+  	}else{
+  		document.getElementById.innerHTML = "Tidak Support HTML5!!";
+  	}
+  }
+
+	function ganti_tipe_peta(tipenya){ // pengaturan perubah tipe map
+	  	if(tipenya == "roadmap"){
+	  		map_utama.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+	  	}else if(tipenya == "satellite"){
+	  		map_utama.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+	  	}else if(tipenya == "hybrid"){
+	  		map_utama.setMapTypeId(google.maps.MapTypeId.HYBRID);
+	  	}else if(tipenya == "terrain"){
+	  		map_utama.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+	  	}
+	}
+	google.maps.event.addDomListener(window,"load",load_peta);
+
+    </script>
+</head>
+<body>
+
+	<div class="container">
+
+    <div class="page-header">    
+      <center>
+        <table id="bagian_atas">
+          <tr>
+            <td>
+              <button type="button" class="btn btn-primary" id="roadmap" onclick="ganti_tipe_peta(this.id)">Mode RoadMap</button>
+            </td>
+  	        <td>
+  	        	<button type="button" class="btn btn-success" id="satellite" onclick="ganti_tipe_peta(this.id)">Mode Satellite</button>
+  	        </td>
+  	        <td>
+  	    			<button type="button" class="btn btn-info" id="hybrid" onclick="ganti_tipe_peta(this.id)">Mode Hybrid</button>
+  	     		</td>
+         		<td>
+  	     			<button type="button" class="btn btn-default" id="terrain" onclick="ganti_tipe_peta(this.id)">Mode Terrain</button>
+  	     		</td>
+          </tr>
+        </table>
+      </center>
+    </div>
+
+    <center>
+      <span class="label label-default" id="nilai_latitude">Latitude : -</span>
+  		<span class="label label-default" id="nilai_longitude">Longitude: -</span>
+    </center>
+
+    <div id="bagian_maps" class="img-rounded"></div>
+
+  </div>
+</body>
+</html>
